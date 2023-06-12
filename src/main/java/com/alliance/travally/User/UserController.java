@@ -1,20 +1,30 @@
 package com.alliance.travally.User;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
 
-    @GetMapping("/returnUser")
-    public String returnUser(@RequestParam String username, @RequestParam String email) {
-        UserDTO dto = new UserDTO(username, email);
-        User user = new UserMapper().toUser(dto);
+    UserService userService;
 
-        return user.toString();
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
+    @GetMapping("/createUser")
+    public String returnUser(@RequestParam String username, @RequestParam String email) {
+        UserDTO userDTO = new UserDTO(username, email);
+        boolean success = userService.createUser(userDTO);
+
+        if (!success) {
+            return "Error creating user.";
+        }
+
+        return "User created!";
+    }
 
 }
