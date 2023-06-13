@@ -1,17 +1,14 @@
 package com.alliance.travally.User;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
+@Data
 @Builder
-@AllArgsConstructor
 public class UserDTO {
 
-    @Getter
-    @Setter
-    private String username;
-
-    @Getter
-    @Setter
-    private String email;
+    private final String name;
+    private final String username;
+    private final String email;
 
 }

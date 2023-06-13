@@ -24,60 +24,75 @@ public class UserServiceTest {
         @Test
         @DisplayName("Correct details returns true")
         public void testCreateUser() {
+            String name = "Test";
             String username = "test_username";
             String email = "test_email@test.com";
+            String password = "password";
 
-            UserDTO userDTO = UserDTO.builder()
+            UserRegistrationDTO userRegistrationDTO = UserRegistrationDTO.builder()
+                    .name(name)
                     .username(username)
                     .email(email)
+                    .password(password)
                     .build();
 
-            boolean success = userService.createUser(userDTO);
+            boolean success = userService.createUser(userRegistrationDTO);
             assertTrue(success);
         }
 
         @Test
         @DisplayName("Blank details returns false")
         public void testCreateUser_blank() {
+            String name = "Test";
             String username = "";
             String email = "";
+            String password = "password";
 
-            UserDTO userDTO = UserDTO.builder()
+            UserRegistrationDTO userRegistrationDTO = UserRegistrationDTO.builder()
+                    .name(name)
                     .username(username)
                     .email(email)
+                    .password(password)
                     .build();
-
-            boolean success = userService.createUser(userDTO);
+            boolean success = userService.createUser(userRegistrationDTO);
             assertFalse(success);
         }
 
         @Test
         @DisplayName("Incorrect username format returns false")
         public void testCreateUser_incorrectUsername() {
+            String name = "Test";
             String username = ".";
             String email = "test_email@test.com";
+            String password = "password";
 
-            UserDTO userDTO = UserDTO.builder()
+            UserRegistrationDTO userRegistrationDTO = UserRegistrationDTO.builder()
+                    .name(name)
                     .username(username)
                     .email(email)
+                    .password(password)
                     .build();
 
-            boolean success = userService.createUser(userDTO);
+            boolean success = userService.createUser(userRegistrationDTO);
             assertFalse(success);
         }
 
         @Test
         @DisplayName("Incorrect email format returns false")
         public void testCreateUser_incorrectEmail() {
+            String name = "Test";
             String username = "test_username";
             String email = "test_email.com";
+            String password = "password";
 
-            UserDTO userDTO = UserDTO.builder()
+            UserRegistrationDTO userRegistrationDTO = UserRegistrationDTO.builder()
+                    .name(name)
                     .username(username)
                     .email(email)
+                    .password(password)
                     .build();
 
-            boolean success = userService.createUser(userDTO);
+            boolean success = userService.createUser(userRegistrationDTO);
             assertFalse(success);
         }
     }
