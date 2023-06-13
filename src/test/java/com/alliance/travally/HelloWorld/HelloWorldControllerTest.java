@@ -1,9 +1,10 @@
 package com.alliance.travally.HelloWorld;
 
-import com.alliance.travally.HelloWorldControlller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest
 public class HelloWorldControllerTest {
 
     @Test
