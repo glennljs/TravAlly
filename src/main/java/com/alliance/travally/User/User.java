@@ -1,20 +1,16 @@
 package com.alliance.travally.User;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Builder;
+import lombok.Data;
 
-@AllArgsConstructor
-@ToString
+@Data
+@Builder
 public class User {
 
-    @Getter
     private final String id;
-
-    @Getter
+    private final String name;
     private final String username;
-
-    @Getter
     private final String email;
+    private final String password;
 
 }

@@ -2,11 +2,14 @@ package com.alliance.travally.User;
 
 import com.alliance.travally.Database.DatabaseService;
 import com.alliance.travally.Exceptions.ValidationException;
+import com.alliance.travally.Utils.EncryptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.alliance.travally.User.UserMapper.toRegisteredUser;
 import static com.alliance.travally.Utils.AuthenticationUtils.isValidEmail;
 import static com.alliance.travally.Utils.AuthenticationUtils.isValidUsername;
 
@@ -14,28 +17,43 @@ import static com.alliance.travally.Utils.AuthenticationUtils.isValidUsername;
 public class UserService {
 
     private final DatabaseService databaseService;
+    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserService(@Qualifier(value = "mockDatabaseService") DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 
-    Logger logger = LoggerFactory.getLogger(UserService.class);
-
-    public boolean createUser(UserDTO userDTO) {
+    public boolean createUser(UserRegistrationDTO userRegistrationDTO) {
         try {
-            validateUser(userDTO);
+            validateUser(userRegistrationDTO);
         } catch (ValidationException e) {
             logger.error(e.getMessage());
             return false;
         }
 
-        User user = new UserMapper().toUser(userDTO);
-        return databaseService.create(user);
+        PasswordEncoder encoder = EncryptionUtils.getPasswordEncoder();
+        String encryptedPassword = encoder.encode(userRegistrationDTO.getPassword());
+        User user = toRegisteredUser(userRegistrationDTO, encryptedPassword);
+
+        boolean success = databaseService.create(user);
+        if (success); {
+            logger.info("User created! " + user.toString());
+            return true;
+        }
+//        return false;
     }
 
-    private void validateUser(UserDTO userDTO) throws ValidationException {
+    public UserDTO findUserByUsername(String username) {
+        return UserDTO.builder()
+                .name("Test")
+                .username(username)
+                .email("email@email.com")
+                .build();
+    }
+
+    private void validateUser(UserRegistrationDTO userRegistrationDTO) throws ValidationException {
         // this should be slightly redundant - preliminary checks should be done on FE
-        if (!(isValidUsername(userDTO.getUsername()) && isValidEmail(userDTO.getEmail()))) {
+        if (!(isValidUsername(userRegistrationDTO.getUsername()) && isValidEmail(userRegistrationDTO.getEmail()))) {
             throw new ValidationException("Incorrect username or email format");
         }
     }

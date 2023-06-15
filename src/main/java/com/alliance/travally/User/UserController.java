@@ -1,30 +1,37 @@
 package com.alliance.travally.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
 
-    UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping("/createUser")
-    public String returnUser(@RequestParam String username, @RequestParam String email) {
-        UserDTO userDTO = new UserDTO(username, email);
-        boolean success = userService.createUser(userDTO);
-
+    @PostMapping("/createUser")
+    public ResponseEntity<String> createUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
+        boolean success = userService.createUser(userRegistrationDTO);
         if (!success) {
-            return "Error creating user.";
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User registration failed.");
         }
 
-        return "User created!";
+        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully.");
+    }
+
+    @GetMapping("/getUserDetails")
+    public ResponseEntity<String> getUserDetails(@RequestParam String username) {
+        UserDTO response = userService.findUserByUsername(username);
+        if (response == null) {
+            return ResponseEntity.status(HttpStatus.OK).body("User not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findUserByUsername(username).toString());
     }
 
 }

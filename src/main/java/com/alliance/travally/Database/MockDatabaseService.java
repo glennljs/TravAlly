@@ -22,6 +22,6 @@ public class MockDatabaseService implements DatabaseService {
 
     @Override
     public void delete(long id) {
-
+        // do nothing
     }
 }
